@@ -235,3 +235,177 @@ tsc --init
 			const student = { id: 1, name: 'Alice' };
 			const hasStudent1 = !!student?.id; // true
 			const hasStudent2 = Boolean(student?.id); // true
+
+## Những điều bạn cần biết về destructuring
+1. Object destructuring
+	- Ex:
+		interface Student {
+			id: number;
+			name: string;
+			age: number;
+			gender: string;
+		}
+		const bob = {
+			id: 1,
+			name: 'Bob',
+			age: 18,
+			gender: 'male'
+		};
+		// OLD WAY
+		const id = bob.id;
+		const name = bob.name;
+		// NEW WAY
+		const { id, name } = bob;
+		-------------------------------------------------------
+		const bob = {
+			id: 1,
+			name: 'Bob',
+			age: 18,
+			gender: 'male'
+		};
+		// OLD WAY
+		const id = bob.id;
+		const rest = {
+			name: bob.name,
+			age: bob.age,
+			gender: bob.gender,
+		}
+		// NEW WAY WITH REST OPERATOR
+		const { id, ...rest } = bob;
+		-------------------------------------------------------
+		// Clone object with spread operator
+		const bob1 = {
+			id: 1,
+			name: 'Bob 1',
+			age: 18,
+			gender: 'male'
+		};
+		const bob2 = {
+			...bob1,
+			name: 'Bob 2'
+		};
+		bob1 === bob2; // false;
+
+2. Array destructuring
+	- Ex:
+		const fullName = 'Easy Frontend';
+		const wordList = fullName.split(' '); // ['Easy', 'Frontend']
+		// OLD WAY
+		const firstName = wordList[0];
+		const lastName = wordList[1];
+		// NEW WAY
+		const [firstName, lastName] = wordList;
+		-------------------------------------------------------
+		// Array with rest operator
+		const [x, y, ...remaining] = [1, 2, 3, 4];
+		console.log(x, y, remaining);
+		// 1, 2, [3, 4]
+		-------------------------------------------------------
+		// Clone array with spread operator
+		const numberList = [1, 2, 3, 4];
+		const newList1 = [...numberList]; // [1, 2, 3, 4]
+		const newList2 = [...numberList, 5, 6]; // [1, 2, 3, 4, 5, 6]
+		-------------------------------------------------------
+		// Clone array of objects (BE CAREFUL!!!)
+		interface Student {
+		id: number;
+		name: string;
+		age: number;
+		gender: string;
+		}
+		const studentList: Student[] = [
+		{ id: 1, name: 'Alice', age: 11, gender: 'female' },
+		{ id: 2, name: 'Bob', age: 12, gender: 'male' }
+		];
+		const newList = [...studentList]; -> clone tham chiếu
+		newList[0].name = 'Alice Alice';
+		console.log(studentList[0].name); // ???
+		-------------------------------------------------------
+		// Swap two items
+		let x = 5;
+		let y = 10;
+		// OLD WAY
+		let temp = x;
+		x = y; // 10
+		y = temp; // 5
+		// NEW WAY
+		[y, x] = [x, y];
+
+## Tổng quan về type system
+1. Các kiểu dữ liệu thường gặp
+	- Các kiểu dữ liệu bạn đã biết bên Javascript
+		+ Primitive: number, boolean, string, null, undefined, symbol
+		+ Reference: array, object, function
+	- Còn typescript, bạn sẽ bắt gặp: any, unknown, void, never, ...
+	- Ex:
+		let count = 5;
+		count = 'five';
+		// type error: Type 'string' is not assignable to type 'number'.ts(2322)
+		-------------------------------------------------------
+		// adding any, solved 🤣
+		let count: any = 5;
+		count = 'five'; // no error now :v
+		-------------------------------------------------------
+		// three common primitive types: string, number and boolean
+		let count: number = 10;
+		let channelName: string = 'Easy Frontend';
+		let isActive: boolean = true;
+		// we can simply omit the type annotation
+		let count = 10;
+		let channelName = 'Easy Frontend';
+		let isActive = true;
+		-------------------------------------------------------
+
+2. Literal types
+	- Chỉ định một giá trị cụ thể làm kiểu dữ liệu.
+	- Ex:
+		let count: 1;
+		let channelName: 'easy';
+		let isActive: false;
+		let student: null;
+		-------------------------------------------------------
+		let count: 1 = 2;
+		// error Type '2' is not assignable to type '1'
+	- Với const, khi omit type annotation, literal type sẽ được sử dụng. Vì const chỉ nhận được 1 giá trị, không thể thay đổi được.
+	- Ex:
+		const count = 1; // const count: 1
+		const channelName = 'Easy Frontend'; // const channelName: 'Easy Frontend'
+		const isActive = false; // const isActive: false
+		-------------------------------------------------------
+		let count = 1; // let count: number
+		let channelName = 'Easy Frontend'; // let channelName: string
+		let isActive = false; // let isActive: boolean
+		-------------------------------------------------------
+		const student = {
+			id: 1,
+			name: 'Easy Frontend',
+		}
+		// this is how ts understand:
+		// const student: {
+		// id: number;
+		// name: string;
+		// }
+		// because the props of an object can be updated
+		student.name = 'Typescript is easy! :P'; // works
+		-------------------------------------------------------
+		const student = {
+			id: 1,
+			name: 'Easy Frontend',
+		} as const
+		// this is how ts understand:
+		// const student: {
+		// readonly id: 1;
+		// readonly name: "Easy Frontend";
+		// }
+		// you now can't update props of this object
+		student.name = 'Typescript is easy, really?!';
+		// error: Cannot assign to 'name' because it is a read-only property.
+
+3. Type Alias and Interface
+
+4. Điều cần lưu ý khi làm việc với function
+
+5. Tất tần tật về Enum trong typescript
+
+
+
